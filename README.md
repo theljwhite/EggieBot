@@ -1,11 +1,10 @@
-###EggieBot
+### EggieBot
 
 Made for DBT friends. Was my first time ever trying a Discord bot, was fun.
 
-#Commands:
+# Commands:
 
 `/ping`
-
 Pings the EggieBot.
 
 `list_commands`
