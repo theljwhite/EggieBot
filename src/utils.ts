@@ -1,8 +1,22 @@
 import { ResponseLike } from "./types";
-import { DBT_WEAP_NAMES } from "./constants";
+import { DBT_WEAP_NAMES, SPACE_BETWEEN_CAPITALS_REGEX } from "./constants";
 
 export const generateUrl = (host: string, path: `/${string}`) => {
   return `${host}${path}`;
+};
+
+export const SPACE_BETWEEN_CAPITALS_REPLACE = (str: string) =>
+  str.replace(SPACE_BETWEEN_CAPITALS_REGEX, "$1 $2");
+
+export const camelToFlat = (camel: string) => {
+  const camelCase = camel.replace(/([a-z])([A-Z])/g, "$1 $2").split(" ");
+
+  let flat = "";
+
+  camelCase.forEach((word) => {
+    flat = flat + word.charAt(0).toUpperCase() + word.slice(1) + " ";
+  });
+  return flat;
 };
 
 export const safeParseJson = async <T>(

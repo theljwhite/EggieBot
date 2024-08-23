@@ -1,6 +1,6 @@
-import { FetchLike } from "../types";
-import { generateUrl } from "../utils";
-import { EggieError } from "../error";
+import { FetchLike } from "./types";
+import { generateUrl } from "./utils";
+import { EggieError } from "./error";
 
 interface EggieApiOptions {
   host: string;

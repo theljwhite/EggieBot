@@ -1,3 +1,5 @@
+//TODO - update these types
+
 export type ServersListData = {
   customs: CustomsShape;
   pickup_ids: any[];

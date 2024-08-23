@@ -9,9 +9,9 @@ import {
   ActivityType,
 } from "discord.js";
 import { InteractionHandler } from "./command-handler";
-import { EggieApi } from "./external/api";
+import { EggieApi } from "./api";
 import { Either } from "./types";
-import { ServersListData } from "./external/types";
+import { ServersListData } from "./types/return-types";
 import { SerializedError } from "./error";
 
 dotenv.config();
@@ -52,13 +52,13 @@ class EggieBot {
     const REFETCH_PICKUPS_MS = 60_000;
 
     this.client.on(Events.ClientReady, async () => {
-      console.log("Bot client logged in");
+      console.log("✔️ Bot client logged in");
 
       await this.pollBestPickupStatus();
 
-      // setInterval(async () => {
-      //   await this.pollBestPickupStatus();
-      // }, REFETCH_PICKUPS_MS);
+      setInterval(async () => {
+        await this.pollBestPickupStatus();
+      }, REFETCH_PICKUPS_MS);
     });
 
     this.client.on(Events.Error, (error) => {
@@ -81,9 +81,9 @@ class EggieBot {
           body: commands,
         }
       );
-      console.log(`Registered ${data.length} global (/) commands`);
+      console.log(`✔️ Registered ${data.length} global (/) commands`);
     } catch (error) {
-      console.error("Error registering application (/) commands", error);
+      console.error("❌ Error registering application (/) commands", error);
     }
   }
 
@@ -102,19 +102,19 @@ class EggieBot {
         .sort((a, b) => b.user_count - a.user_count);
 
       const bestPlayerCount = `${pickups[0].user_count}/${
-        pickups[0].team_size * pickups[0].team_size
+        pickups[0].team_size * pickups[0].team_count
       }`;
 
       this.client.user.setActivity(
         pickups.length > 0
           ? `Pickup available: ${bestPlayerCount} at ${pickups[0].datacenter}`
-          : "No pickups awaiting players",
+          : "⚠️ No pickups awaiting players",
         {
           type: ActivityType.Custom,
         }
       );
     } catch (error) {
-      this.client.user.setActivity("Currently unable to fetch pickups", {
+      this.client.user.setActivity("❌ Unable to fetch pickups right now", {
         type: ActivityType.Custom,
       });
     }

@@ -1,3 +1,5 @@
+//TODO - will update to correct weapon names
+
 export const DBT_WEAP_NAMES = [
   "Hammer",
   "Machinegun",
@@ -10,3 +12,4 @@ export const DBT_WEAP_NAMES = [
 ];
 
 export const ONE_DAY_SECONDS = 86_400;
+export const SPACE_BETWEEN_CAPITALS_REGEX = /([a-z])([A-Z])/g;

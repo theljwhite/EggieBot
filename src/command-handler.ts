@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction, InteractionResponse } from "discord.js";
 import { type Command } from "./command";
 import {
   PingCommand,
@@ -35,7 +35,7 @@ export class InteractionHandler {
 
   public async handleInteraction(
     interaction: ChatInputCommandInteraction
-  ): Promise<void> {
+  ): Promise<void | InteractionResponse<boolean>> {
     try {
       const commandName = interaction.commandName;
 
@@ -56,6 +56,15 @@ export class InteractionHandler {
       console.log(
         `Error executing command [/${interaction.commandName}]: ${error}`
       );
+      const embeds = [
+        {
+          color: 0xc30010,
+          title: `❌ ${error.code ?? "UNKNOWN_ERROR"} ❌`,
+          description: error.message ?? "Failed to perform the action.",
+        },
+      ];
+
+      return interaction.reply({ embeds });
     }
   }
 }

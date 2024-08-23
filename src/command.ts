@@ -5,12 +5,16 @@ import {
   CacheType,
   InteractionResponse,
 } from "discord.js";
-import { EggieApi } from "./external/api";
+import { EggieApi } from "./api";
 import { Either } from "./types";
 import { SerializedError } from "./error";
 import { InteractionHandler } from "./command-handler";
-import { PlayerCountReturn, ServersListData } from "./external/types";
-import { getDBTCoolDateShapeFromDate, parseDBTStats } from "./utils";
+import { PlayerCountReturn, ServersListData } from "./types/return-types";
+import {
+  camelToFlat,
+  getDBTCoolDateShapeFromDate,
+  parseDBTStats,
+} from "./utils";
 
 export interface Command {
   name: string;
@@ -33,7 +37,7 @@ export class PingCommand implements Command {
     interaction: ChatInputCommandInteraction<CacheType>
   ): Promise<InteractionResponse> {
     return interaction.reply(
-      "Pong. That and 50 cents would get you a cup of coffee."
+      "Pong. That and 50 cents would get you a cup of coffee. ☕"
     );
   }
 }
@@ -91,7 +95,7 @@ export class TotalPlayersCommand implements Command {
     const totalUsers = countsPerServer.reduce((prev, curr) => prev + curr, 0);
 
     return interaction.reply(
-      `There are currently (${totalUsers}) active users between customs and pickups.`
+      `There are currently (${totalUsers}) active users between customs and pickups. 🌎`
     );
   }
 }
@@ -113,20 +117,24 @@ export class TotalPlayersLastDay implements Command {
 
     const dateString = getDBTCoolDateShapeFromDate(nowMinusOneDay);
 
-    const response = await api.eggieGet<
-      Either<{ data: PlayerCountReturn }, SerializedError>
-    >(
+    const response = await api.eggieGet<PlayerCountReturn>(
       `/api/v1/live-player-count?start_date=${dateString}&range=last24h`,
       "Failed to fetch player counts"
     );
 
-    const totalPlayerCountDay = response.data.data.playerCounts.reduce(
+    const totalPlayerCountDay = response.playerCounts.reduce(
       (prev, curr) => prev + curr.player_count,
       0
     );
 
+    if (totalPlayerCountDay === 0) {
+      return interaction.reply(
+        `Couldn't find any player data for the last 24 hrs. It is possible that this is an external API issue. 😐`
+      );
+    }
+
     return interaction.reply(
-      `There were (${totalPlayerCountDay}) players in the last 24 hrs.`
+      `There were (${totalPlayerCountDay}) players in the last 24 hrs. 🤩`
     );
   }
 }
@@ -183,24 +191,26 @@ export class ServerListCommand implements Command {
       playerCount: p.user_count,
       lobbySize: p.team_size * p.team_count,
       minMatches: p.min_matches_played,
-      skill: `MIN: ${p.min_skill}, MAX: ${p.max_skill}`,
+      skill: `MIN: ${Math.round(p.min_skill)}, MAX: ${Math.round(p.max_skill)}`,
     }));
 
-    const customs = response.data.data.customs.map((c) => ({
-      name: c.name,
+    const customs = response.data.data.customs.map((c, index) => ({
+      index: index + 1,
+      name: c.name ?? "Custom Lobby",
       type: "Custom",
-      map: c.map_name,
+      map: c.map_name ?? "Unknown",
+      mode: c.mode,
       playerCount: c.client_count,
       location: c.location,
-      scoreLimit: c.score_limit,
+      scoreLimit: c.score_limit ?? "None",
     }));
 
     const embeds = [...pickups, ...customs].map((item, index) => ({
       color: item.type === "Pickup" ? 0xff9900 : 0x0099ff,
-      title: `${item.type} - ${index}`,
+      title: `${item.type} (Server #${index + 1})`,
       description: `Details about this ${item.type} match`,
       fields: Object.entries(item).map(([key, value]) => ({
-        name: key,
+        name: camelToFlat(key),
         value: String(value),
         inline: true,
       })),
@@ -236,11 +246,12 @@ export class PendingPickupsCommand implements Command {
       description: `Players: ${pickup.user_count}/${
         pickup.team_size * pickup.team_count
       }`,
-      fields: pickup.users.map((user) => ({
-        name: "Player",
-        value: user.name,
-        inline: true,
-      })),
+      fields: [
+        {
+          name: "Players List",
+          value: pickup.users.map((user) => user.name).join(", "),
+        },
+      ],
     }));
 
     return interaction.reply({ embeds });
