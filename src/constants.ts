@@ -8,3 +8,5 @@ export const DBT_WEAP_NAMES = [
   "PNCR",
   "Grenades",
 ];
+
+export const ONE_DAY_SECONDS = 86_400;

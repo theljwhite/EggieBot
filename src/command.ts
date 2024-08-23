@@ -1,20 +1,25 @@
 import {
   SlashCommandBuilder,
+  SlashCommandOptionsOnlyBuilder,
   ChatInputCommandInteraction,
   CacheType,
+  InteractionResponse,
 } from "discord.js";
 import { EggieApi } from "./external/api";
 import { Either } from "./types";
 import { SerializedError } from "./error";
-import { ServersListData } from "./external/types";
-import { parseDBTStats } from "./utils";
+import { InteractionHandler } from "./command-handler";
+import { PlayerCountReturn, ServersListData } from "./external/types";
+import { getDBTCoolDateShapeFromDate, parseDBTStats } from "./utils";
 
 export interface Command {
   name: string;
   description?: string;
-  slashCommandConfig: any;
+  slashCommandConfig: SlashCommandOptionsOnlyBuilder;
 
-  execute(interaction: ChatInputCommandInteraction): Promise<any>;
+  execute(
+    interaction: ChatInputCommandInteraction<CacheType>
+  ): Promise<InteractionResponse>;
 }
 
 export class PingCommand implements Command {
@@ -26,21 +31,52 @@ export class PingCommand implements Command {
 
   public async execute(
     interaction: ChatInputCommandInteraction<CacheType>
-  ): Promise<any> {
+  ): Promise<InteractionResponse> {
     return interaction.reply(
       "Pong. That and 50 cents would get you a cup of coffee."
     );
   }
 }
 
-export class TotalPlayersCommand implements Command {
-  name = "player_count";
-  description = "Gets the total number of DBT players.";
+export class ListCommandsCommand implements Command {
+  name = "list_commands";
+  description = "Print a list of all Eggie commands to the chat.";
   slashCommandConfig = new SlashCommandBuilder()
     .setName(this.name)
     .setDescription(this.description);
 
-  public async execute(interaction: ChatInputCommandInteraction): Promise<any> {
+  public async execute(
+    interaction: ChatInputCommandInteraction<CacheType>
+  ): Promise<InteractionResponse> {
+    const interactionHandler = new InteractionHandler();
+    const commands = interactionHandler.getSlashCommands().map((command) => ({
+      name: `/${command.name}`,
+      value: command.description,
+    }));
+
+    const embeds = [
+      {
+        color: 0xff9900,
+        title: "EggieBot Commands List",
+        description: "A list of all usuable commands.",
+        fields: commands,
+      },
+    ];
+
+    return interaction.reply({ embeds });
+  }
+}
+
+export class TotalPlayersCommand implements Command {
+  name = "player_count";
+  description = "Gets the total number of DBT players right now.";
+  slashCommandConfig = new SlashCommandBuilder()
+    .setName(this.name)
+    .setDescription(this.description);
+
+  public async execute(
+    interaction: ChatInputCommandInteraction<CacheType>
+  ): Promise<InteractionResponse> {
     const api = new EggieApi({ host: "https://diabotical.cool" });
 
     const response = await api.eggieGet<
@@ -60,6 +96,41 @@ export class TotalPlayersCommand implements Command {
   }
 }
 
+export class TotalPlayersLastDay implements Command {
+  name = "player_count_last_day";
+  description = "Get the total number of players in the last day.";
+  slashCommandConfig = new SlashCommandBuilder()
+    .setName(this.name)
+    .setDescription(this.description);
+
+  public async execute(
+    interaction: ChatInputCommandInteraction<CacheType>
+  ): Promise<InteractionResponse> {
+    const api = new EggieApi({ host: "https://diabotical.cool" });
+
+    const now = new Date();
+    const nowMinusOneDay = new Date(now.setDate(now.getDate() - 1));
+
+    const dateString = getDBTCoolDateShapeFromDate(nowMinusOneDay);
+
+    const response = await api.eggieGet<
+      Either<{ data: PlayerCountReturn }, SerializedError>
+    >(
+      `/api/v1/live-player-count?start_date=${dateString}&range=last24h`,
+      "Failed to fetch player counts"
+    );
+
+    const totalPlayerCountDay = response.data.data.playerCounts.reduce(
+      (prev, curr) => prev + curr.player_count,
+      0
+    );
+
+    return interaction.reply(
+      `There were (${totalPlayerCountDay}) players in the last 24 hrs.`
+    );
+  }
+}
+
 export class ActiveMatchesCountCommand implements Command {
   name = "count_matches";
   description = "Get the number of active pickups, customs, etc.";
@@ -69,7 +140,7 @@ export class ActiveMatchesCountCommand implements Command {
 
   public async execute(
     interaction: ChatInputCommandInteraction<CacheType>
-  ): Promise<any> {
+  ): Promise<InteractionResponse> {
     const api = new EggieApi({ host: "https://diabotical.cool" });
 
     const response = await api.eggieGet<
@@ -95,7 +166,9 @@ export class ServerListCommand implements Command {
     .setName(this.name)
     .setDescription(this.description);
 
-  public async execute(interaction: ChatInputCommandInteraction): Promise<any> {
+  public async execute(
+    interaction: ChatInputCommandInteraction<CacheType>
+  ): Promise<InteractionResponse> {
     const api = new EggieApi({ host: "https://diabotical.cool" });
 
     const response = await api.eggieGet<
@@ -146,7 +219,7 @@ export class PendingPickupsCommand implements Command {
 
   public async execute(
     interaction: ChatInputCommandInteraction<CacheType>
-  ): Promise<any> {
+  ): Promise<InteractionResponse> {
     const api = new EggieApi({ host: "https://diabotical.cool" });
 
     const response = await api.eggieGet<
@@ -186,7 +259,7 @@ export class PlayerMatchHistoryCommand implements Command {
 
   public async execute(
     interaction: ChatInputCommandInteraction<CacheType>
-  ): Promise<any> {
+  ): Promise<InteractionResponse> {
     const epicId = interaction.options.getString("epicid");
 
     if (epicId.length < 32) {

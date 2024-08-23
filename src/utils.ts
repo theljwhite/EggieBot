@@ -63,3 +63,8 @@ export const parseDBTStats = (
   });
   return matches;
 };
+
+export const getDBTCoolDateShapeFromDate = (date: Date): string => {
+  const formattedDate = date.toISOString().split("T")[0].replace("/", "-");
+  return formattedDate;
+};

@@ -68,3 +68,10 @@ export type CustomsShape = {
   }[];
   team_scores: { 0: number; 1: number };
 }[];
+
+export type PlayerCountRecord = {
+  timestamp: Date;
+  player_count: number;
+};
+
+export type PlayerCountReturn = { playerCounts: PlayerCountRecord[] };

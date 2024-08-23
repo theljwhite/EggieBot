@@ -5,6 +5,10 @@ import {
   PendingPickupsCommand,
   ActiveMatchesCountCommand,
   PlayerMatchHistoryCommand,
+  TotalPlayersCommand,
+  TotalPlayersLastDay,
+  ListCommandsCommand,
+  ServerListCommand,
 } from "./command";
 
 export class InteractionHandler {
@@ -13,9 +17,13 @@ export class InteractionHandler {
   constructor() {
     this.commands = [
       new PingCommand(),
+      new ListCommandsCommand(),
+      new ServerListCommand(),
       new PendingPickupsCommand(),
       new ActiveMatchesCountCommand(),
       new PlayerMatchHistoryCommand(),
+      new TotalPlayersCommand(),
+      new TotalPlayersLastDay(),
     ];
   }
 
