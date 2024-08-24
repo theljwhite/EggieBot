@@ -1,13 +1,13 @@
 {
   "name": "eggiebot",
   "version": "1.0.0",
-  "description": "",
-  "main": "main.js",
+  "description": "Simple Discord bot for DBT servers",
+  "main": "main.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "prestart": "npm run build",
-    "start": "node build/main.js"
+    "start": "node build/main.ts"
   },
   "author": "LJ White",
   "license": "ISC",
