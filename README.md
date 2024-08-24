@@ -38,4 +38,4 @@ Get stats on a player's last 5 matches.
 
 ![Pending pickups](https://i.ibb.co/rsjHd6n/eggie3.png)
 
-![List servers](https://i.ibb.co/N6YLnzr/eggie5.png)
+![List servers](https://i.ibb.co/t40tsRb/eggie6.png)
