@@ -3,7 +3,6 @@
 Made for DBT friends. Was my first time ever trying a Discord bot, was fun.
 It has slash commands, and it'll update every minute with a status message of the most full server.
 
-Connecting wallet:
 ![EggieStatus](https://i.ibb.co/mRd37P2/eggie2.png)
 
 ## Commands:
@@ -38,7 +37,7 @@ Get stats on a player's last 5 matches.
 ## Examples:
 
 Pending pickups:
-![List servers](https://i.ibb.co/rsjHd6n/eggie3.png)
+![Pending pickups](https://i.ibb.co/rsjHd6n/eggie3.png)
 
 List servers:
 ![List servers](https://i.ibb.co/N6YLnzr/eggie5.png)
