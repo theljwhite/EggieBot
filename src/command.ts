@@ -315,7 +315,7 @@ export class PlayerMatchHistoryCommand implements Command {
 
       const weaponFields = m.stats.weapons.map((w) => ({
         name: w.weaponName,
-        value: `Damage done: ${w.di} - Damage taken: ${w.dt}`,
+        value: `DMG Done: ${w.di} - DMG Taken: ${w.dt}`,
         inline: true,
       }));
 
