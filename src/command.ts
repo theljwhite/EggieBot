@@ -194,11 +194,12 @@ export class ServerListCommand implements Command {
       skill: `MIN: ${Math.round(p.min_skill)}, MAX: ${Math.round(p.max_skill)}`,
     }));
 
-    const customs = response.data.data.customs.map((c, index) => ({
-      index: index + 1,
-      name: c.name ?? "Custom Lobby",
+    console.log("r", response.data.data.customs);
+
+    const customs = response.data.data.customs.map((c) => ({
+      name: c.name ? c.name : "Custom Lobby",
       type: "Custom",
-      map: c.map_name ?? "Unknown",
+      map: c.map_name ? c.map_name : "Unknown",
       mode: c.mode,
       playerCount: c.client_count,
       location: c.location,
@@ -239,6 +240,10 @@ export class PendingPickupsCommand implements Command {
     const pickups = response.data.data.pickups.filter(
       (pickup) => pickup.user_count < pickup.team_size * pickup.team_count
     );
+
+    if (pickups.length === 0) {
+      return interaction.reply("There are currently 0 pickups.");
+    }
 
     const embeds = pickups.map((pickup) => ({
       color: 0x0099ff,
