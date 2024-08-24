@@ -201,7 +201,7 @@ export class ServerListCommand implements Command {
       map: c.map_name ? c.map_name : "Unknown",
       mode: c.mode,
       playerCount: `${c.client_count}/${c.team_size * c.team_count}`,
-      location: c.location,
+      location: DATACENTERS[c.location] ?? c.location,
       scoreLimit: c.score_limit ?? "None",
     }));
 

@@ -3,7 +3,7 @@
 Made for DBT friends. Was my first time ever trying a Discord bot, was fun.
 It has slash commands, and it'll update every minute with a status message of the most full server.
 
-![EggieStatus](https://i.ibb.co/mRd37P2/eggie2.png)
+![EggieStatus](https://i.ibb.co/v1F79wD/eggie3.png)
 
 ## Commands:
 
