@@ -194,8 +194,6 @@ export class ServerListCommand implements Command {
       skill: `MIN: ${Math.round(p.min_skill)}, MAX: ${Math.round(p.max_skill)}`,
     }));
 
-    console.log("r", response.data.data.customs);
-
     const customs = response.data.data.customs.map((c) => ({
       name: c.name ? c.name : "Custom Lobby",
       type: "Custom",
