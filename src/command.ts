@@ -350,7 +350,10 @@ export class PromoteEveryoneCommand implements Command {
     >("/api/v1/servers/", "Failed to fetch server list.");
 
     if (response.data.data.pickups.length === 0) {
-      return interaction.reply("There are no active pickups.");
+      return interaction.reply({
+        content: "Cannot use this command as there are no active pickups.",
+        ephemeral: true,
+      });
     }
 
     const pickups = response.data.data.pickups
