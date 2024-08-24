@@ -36,8 +36,6 @@ Get stats on a player's last 5 matches.
 
 ## Examples:
 
-Pending pickups:
 ![Pending pickups](https://i.ibb.co/rsjHd6n/eggie3.png)
 
-List servers:
 ![List servers](https://i.ibb.co/N6YLnzr/eggie5.png)
