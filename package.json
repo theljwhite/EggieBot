@@ -15,5 +15,9 @@
     "discord.js": "^14.15.3",
     "dotenv": "^16.4.5",
     "typescript": "^5.5.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/theljwhite/eggieBot.git"
   }
 }
