@@ -349,6 +349,10 @@ export class PromoteEveryoneCommand implements Command {
       Either<{ data: ServersListData }, SerializedError>
     >("/api/v1/servers/", "Failed to fetch server list.");
 
+    if (response.data.data.pickups.length === 0) {
+      return interaction.reply("There are no active pickups.");
+    }
+
     const pickups = response.data.data.pickups
       .filter(
         (pickup) => pickup.user_count < pickup.team_size * pickup.team_count
