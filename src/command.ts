@@ -315,13 +315,13 @@ export class PlayerMatchHistoryCommand implements Command {
 
       const weaponFields = m.stats.weapons.map((w) => ({
         name: w.weaponName,
-        value: `DMG Done: ${w.di} - DMG Taken: ${w.dt}`,
+        value: `DMG Done: ${w.di} - Frags: ${w.f}`,
         inline: true,
       }));
 
       return {
         color: 0x0099ff,
-        title: `Match on ${new Date(m.finish_ts)}`,
+        title: `Match on ${new Date(m.create_ts)}`,
         description: `${m.match_mode.toUpperCase()} on ${
           m.match_map
         } - ${m.location.toUpperCase()}`,

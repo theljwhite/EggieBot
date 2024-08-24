@@ -45,10 +45,12 @@ export const parseDBTStats = (
   limit?: number
 ): typeof matches => {
   const matches = data.slice(0, limit ?? 5).map((d, index) => {
-    const weapons = d.stats.w.map((weapon) => ({
-      ...weapon,
-      weaponName: DBT_WEAP_NAMES[weapon.i] ?? "unknown",
-    }));
+    const weapons = d.stats.w
+      .filter((weapon) => weapon.di)
+      .map((weapon) => ({
+        ...weapon,
+        weaponName: DBT_WEAP_NAMES[weapon.i] ?? "Unknown",
+      }));
     return {
       id: index,
       create_ts: d.create_ts,
