@@ -15,6 +15,7 @@ import {
   getDBTCoolDateShapeFromDate,
   parseDBTStats,
 } from "./utils";
+import { DATACENTERS } from "./constants";
 
 export interface Command {
   name: string;
@@ -187,7 +188,7 @@ export class ServerListCommand implements Command {
       id: p.pickup_id,
       type: "Pickup",
       mode: p.mode,
-      location: p.datacenter,
+      location: DATACENTERS[p.datacenter] ?? p.datacenter,
       playerCount: p.user_count,
       lobbySize: p.team_size * p.team_count,
       minMatches: p.min_matches_played,
@@ -249,7 +250,9 @@ export class PendingPickupsCommand implements Command {
 
     const embeds = pickups.map((pickup) => ({
       color: 0x0099ff,
-      title: `${pickup.mode} on ${pickup.datacenter}`,
+      title: `${pickup.mode} on ${
+        DATACENTERS[pickup.datacenter] ?? pickup.datacenter
+      }`,
       description: `Players: ${pickup.user_count}/${
         pickup.team_size * pickup.team_count
       }`,
