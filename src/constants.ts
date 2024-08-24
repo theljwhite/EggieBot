@@ -1,5 +1,5 @@
 //TODO - will update to correct weapon names
-//and correct datacenter abbreviations
+//and correct datacenter abbreviations, and game modes
 
 export const DBT_WEAP_NAMES = [
   "Hammer",
