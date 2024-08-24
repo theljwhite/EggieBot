@@ -1,23 +1,19 @@
 {
   "name": "eggiebot",
   "version": "1.0.0",
-  "description": "Simple Discord bot for DBT servers",
-  "main": "main.ts",
+  "description": "",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "prestart": "npm run build",
-    "start": "node build/main.ts"
+    "start": "node build/main.js"
   },
-  "author": "LJ White",
+  "author": "",
   "license": "ISC",
   "dependencies": {
     "discord.js": "^14.15.3",
     "dotenv": "^16.4.5",
     "typescript": "^5.5.4"
-  },
-  "engines": {
-    "node": "18.19.0",
-    "npm": "8.10.0"
   }
 }

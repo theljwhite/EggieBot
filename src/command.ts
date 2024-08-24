@@ -204,6 +204,10 @@ export class ServerListCommand implements Command {
       scoreLimit: c.score_limit ?? "None",
     }));
 
+    if (pickups.length === 0 && customs.length === 0) {
+      return interaction.reply("There are currently no servers.");
+    }
+
     const embeds = [...pickups, ...customs].map((item, index) => ({
       color: item.type === "Pickup" ? 0xff9900 : 0x0099ff,
       title: `${item.type} (Server #${index + 1})`,
