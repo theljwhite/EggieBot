@@ -1,16 +1,20 @@
-//TODO - will update to correct weapon names
-//and correct datacenter abbreviations, and game modes
+//TODO - correct datacenter abbrevs, correct mode names
 
-export const DBT_WEAP_NAMES = [
-  "Hammer",
-  "Machinegun",
-  "Plasma",
-  "Shotgun",
-  "Rockets",
-  "Shaft",
-  "PNCR",
-  "Grenades",
-];
+export enum DBT_WEAP_NAMES {
+  MELEE = 0,
+  MG = 1,
+  PLASMA = 2,
+  SG = 3,
+  ROCKET = 4,
+  LG = 5,
+  RAIL = 7,
+  GRENADE = 8,
+  VOID = 19,
+  GRAV_BALL = 13,
+  SLOW_BALL = 14,
+  KNOCK_BALL = 15,
+  SMOKE_BALL = 16,
+}
 
 export const ONE_DAY_SECONDS = 86_400;
 export const SPACE_BETWEEN_CAPITALS_REGEX = /([a-z])([A-Z])/g;
