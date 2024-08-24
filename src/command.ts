@@ -15,6 +15,9 @@ import {
   getDBTCoolDateShapeFromDate,
   parseDBTStats,
 } from "./utils";
+import { DATACENTERS } from "./constants";
+
+//TODO - some of this can be modularized, works for now
 
 export interface Command {
   name: string;
@@ -184,12 +187,10 @@ export class ServerListCommand implements Command {
     >("/api/v1/servers/", "Failed to fetch server list.");
 
     const pickups = response.data.data.pickups.map((p) => ({
-      id: p.pickup_id,
       type: "Pickup",
       mode: p.mode,
-      location: p.datacenter,
-      playerCount: p.user_count,
-      lobbySize: p.team_size * p.team_count,
+      location: DATACENTERS[p.datacenter] ?? p.datacenter,
+      playerCount: `${p.user_count}/${p.team_size * p.team_count}`,
       minMatches: p.min_matches_played,
       skill: `MIN: ${Math.round(p.min_skill)}, MAX: ${Math.round(p.max_skill)}`,
     }));
@@ -199,7 +200,7 @@ export class ServerListCommand implements Command {
       type: "Custom",
       map: c.map_name ? c.map_name : "Unknown",
       mode: c.mode,
-      playerCount: c.client_count,
+      playerCount: `${c.client_count}/${c.team_size * c.team_count}`,
       location: c.location,
       scoreLimit: c.score_limit ?? "None",
     }));
@@ -249,7 +250,9 @@ export class PendingPickupsCommand implements Command {
 
     const embeds = pickups.map((pickup) => ({
       color: 0x0099ff,
-      title: `${pickup.mode} on ${pickup.datacenter}`,
+      title: `${pickup.mode} on ${
+        DATACENTERS[pickup.datacenter] ?? pickup.datacenter
+      }`,
       description: `Players: ${pickup.user_count}/${
         pickup.team_size * pickup.team_count
       }`,
@@ -327,5 +330,40 @@ export class PlayerMatchHistoryCommand implements Command {
     });
 
     return interaction.reply({ embeds });
+  }
+}
+
+export class PromoteEveryoneCommand implements Command {
+  name = "promote";
+  description = "Promote the fullest pickup in chat to everyone.";
+  slashCommandConfig = new SlashCommandBuilder()
+    .setName(this.name)
+    .setDescription(this.description);
+
+  public async execute(
+    interaction: ChatInputCommandInteraction<CacheType>
+  ): Promise<InteractionResponse> {
+    const api = new EggieApi({ host: "https://diabotical.cool" });
+
+    const response = await api.eggieGet<
+      Either<{ data: ServersListData }, SerializedError>
+    >("/api/v1/servers/", "Failed to fetch server list.");
+
+    const pickups = response.data.data.pickups
+      .filter(
+        (pickup) => pickup.user_count < pickup.team_size * pickup.team_count
+      )
+      .sort((a, b) => b.user_count - a.user_count);
+
+    const bestPlayerCount = `${pickups[0].user_count}/${
+      pickups[0].team_size * pickups[0].team_count
+    }`;
+    const dataCenter =
+      DATACENTERS[pickups[0].datacenter] ?? pickups[0].datacenter;
+
+    return interaction.reply({
+      content: `@everyone There is a pickup available to join! ${bestPlayerCount} at ${dataCenter}.`,
+      allowedMentions: { parse: ["everyone"] },
+    });
   }
 }

@@ -9,6 +9,7 @@ import {
   TotalPlayersLastDay,
   ListCommandsCommand,
   ServerListCommand,
+  PromoteEveryoneCommand,
 } from "./command";
 
 export class InteractionHandler {
@@ -24,6 +25,7 @@ export class InteractionHandler {
       new PlayerMatchHistoryCommand(),
       new TotalPlayersCommand(),
       new TotalPlayersLastDay(),
+      new PromoteEveryoneCommand(),
     ];
   }
 

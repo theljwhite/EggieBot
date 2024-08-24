@@ -107,14 +107,14 @@ class EggieBot {
 
       this.client.user.setActivity(
         pickups.length > 0
-          ? `Pickup available: ${bestPlayerCount} at ${pickups[0].datacenter}`
+          ? `Best pickup: ${bestPlayerCount} at ${pickups[0].datacenter}`
           : "⚠️ No pickups awaiting players",
         {
           type: ActivityType.Custom,
         }
       );
     } catch (error) {
-      this.client.user.setActivity("❌ Unable to fetch pickups right now", {
+      this.client.user.setActivity("❌ Failed to find current pickups", {
         type: ActivityType.Custom,
       });
     }
