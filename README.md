@@ -36,6 +36,10 @@ Get stats on a player's last 5 matches.
 
 ## Examples:
 
+![Promote](https://i.ibb.co/MMRN3yV/eggie2.png)
+
 ![Pending pickups](https://i.ibb.co/rsjHd6n/eggie3.png)
 
 ![List servers](https://i.ibb.co/VgQYDrj/eggie2.png)
+
+![Player history](https://i.ibb.co/dt6KVWx/eggie2.png)
